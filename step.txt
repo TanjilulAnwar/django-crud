@@ -1,0 +1,220 @@
+other links
+https://helpdesk.thoughtfarmer.com/hc/en-us/articles/360040613054-How-to-troubleshoot-An-error-occurred-while-starting-the-application-
+https://blog.georgekosmidis.net/2020/07/24/an-error-occurred-while-starting-the-application-process-failure-and-many-more/
+https://www.c-sharpcorner.com/article/django-crud-createretriveupdatedelete-record-using-django-class-based-view2/
+
+
+
+resource:
+
+https://www.javatpoint.com/django-crud-application
+https://stackoverflow.com/questions/55929472/django-templatesyntaxerror-staticfiles-is-not-a-registered-tag-library
+1.https://www.c-sharpcorner.com/article/django-crud-createretriveupdatedelete-record-using-django-class-based-view2/
+2.https://www.techiediaries.com/django/django-3-tutorial-and-crud-example-with-mysql-and-bootstrap/
+
+
+
+django step by step:
+
+
+C:\Users\NICE>d:
+
+D:\>cd work
+
+D:\WORK>python -m venv venv
+
+D:\WORK>venv\Scripts\activate
+
+(venv) D:\WORK>pip install django
+
+(venv) D:\WORK>d:\work\venv\scripts\python.exe -m pip install --upgrade pip
+
+ Found existing installation: pip 20.1.1
+    Uninstalling pip-20.1.1:
+      Successfully uninstalled pip-20.1.1
+Successfully installed pip-21.2.4
+
+
+(venv) D:\WORK>django-admin startproject newproject
+
+(venv) D:\WORK>cd newproject
+
+
+Database setup:
+
+Create a database 'newproject'(charset:utf8 collation:utf8_general_ci) in mysql, and configure into the newproject/newproject/settings.py file
+-----------------------------------------------------------
+DATABASES = {  
+    'default': {  
+        'ENGINE': 'django.db.backends.mysql',  
+        'NAME': 'newproject',  
+        'USER':'root',  
+        'PASSWORD':'root12',  
+        'HOST':'localhost',  
+        'PORT':'3306'  
+    }  
+}  
+----------------------------------------------------------
+
+# Create a Model
+
+Put the following code into employee/models.py file.
+>employee/models.py
+
+--------------------------------------------------
+from django.db import models  
+class Employee(models.Model):  
+    eid = models.CharField(max_length=20)  
+    ename = models.CharField(max_length=100)  
+    eemail = models.EmailField()  
+    econtact = models.CharField(max_length=15)  
+    class Meta:  
+        db_table = "employee" 
+-------------------------------------------------
+# Create a ModelForm
+
+Put the following code into employee/forms.py(create if doesn't exist) file.
+>employee/forms.py
+---------------------------------------------------
+from django import forms  
+from employee.models import Employee  
+class EmployeeForm(forms.ModelForm):  
+    class Meta:  
+        model = Employee  
+        fields = "__all__"  
+-----------------------------------------------------
+
+
+# Create View Functions
+>employee/views.py
+-------------------------------------------------------------------
+from django.shortcuts import render, redirect  
+from employee.forms import EmployeeForm  
+from employee.models import Employee  
+# Create your views here.  
+def emp(request):  
+    if request.method == "POST":  
+        form = EmployeeForm(request.POST)  
+        if form.is_valid():  
+            try:  
+                form.save()  
+                return redirect('/show')  
+            except:  
+                pass  
+    else:  
+        form = EmployeeForm()  
+    return render(request,'index.html',{'form':form})  
+def show(request):  
+    employees = Employee.objects.all()  
+    return render(request,"show.html",{'employees':employees})  
+def edit(request, id):  
+    employee = Employee.objects.get(id=id)  
+    return render(request,'edit.html', {'employee':employee})  
+def update(request, id):  
+    employee = Employee.objects.get(id=id)  
+    form = EmployeeForm(request.POST, instance = employee)  
+    if form.is_valid():  
+        form.save()  
+        return redirect("/show")  
+    return render(request, 'edit.html', {'employee': employee})  
+def destroy(request, id):  
+    employee = Employee.objects.get(id=id)  
+    employee.delete()  
+    return redirect("/show")  
+
+---------------------------------------------------------------------------
+
+
+#Provide Routing
+
+Provide URL patterns to map with views function.
+
+>newproject/urls.py
+-----------------------------------------------------------------------
+from django.contrib import admin  
+from django.urls import path  
+from employee import views  
+urlpatterns = [  
+    path('admin/', admin.site.urls),  
+    path('emp', views.emp),  
+    path('show',views.show),  
+    path('edit/<int:id>', views.edit),  
+    path('update/<int:id>', views.update),  
+    path('delete/<int:id>', views.destroy),  
+]  
+
+------------------------------------------------------------------
+
+# Organize Templates
+
+Create a templates folder inside the employee app(folder) and create three (index, edit, show) html files
+inside the directory.
+{copy the codes here}
+
+# Static Files Handling
+
+Create a folder static/css inside the employee app and put a css inside it.
+{copy the codes here}
+
+#Create Migrations
+
+mention name of app (employee) in INSTALLED_APPS of newproject/newproject/settings.py file
+
+-------------------------------------------
+
+INSTALLED_APPS = [  
+    'django.contrib.admin',  
+    'django.contrib.auth',  
+    'django.contrib.contenttypes',  
+    'django.contrib.sessions',  
+    'django.contrib.messages',  
+    'django.contrib.staticfiles',  
+    'employee'  
+]  
+
+-------------------------------------------
+
+(venv) D:\WORK\newproject>cd..\
+
+(venv) D:\WORK>pip install mysqlclient
+
+(venv) D:\WORK\newproject>python manage.py makemigrations
+
+(venv) D:\WORK\newproject>python manage.py migrate
+
+Now, our application has successfully connected and
+ created tables in database. It creates 10 default 
+tables for handling project (session, authentication etc) 
+and one table of our model that we created.
+
+
+(venv) D:\WORK\newproject>python manage.py runserver
+
+
+save requirements for another venv
+(venv) D:\WORK>python -m pip freeze > requirements.txt
+=====================================================================
+installation in another venv
+D:\WORK>python -m venv venv
+
+D:\WORK>venv\Scripts\activate
+
+(venv) D:\WORK>python -m pip install -r requirements.txt
+
+(venv) D:\WORK>cd newproject
+
+(venv) D:\WORK\newproject>python manage.py makemigrations
+
+(venv) D:\WORK\newproject>python manage.py migrate
+
+(venv) D:\WORK\newproject>python manage.py runserver
+
+
+
+
+
+
+
+
+
+
