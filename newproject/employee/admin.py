@@ -1,3 +1,7 @@
 from django.contrib import admin
+from employee.models import Employee
 
-# Register your models here.
+class AuthorAdmin(admin.ModelAdmin):
+    # pass
+    list_display = ('eid','ename', 'eemail', 'econtact')
+admin.site.register(Employee, AuthorAdmin)

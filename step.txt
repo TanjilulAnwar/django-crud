@@ -39,6 +39,7 @@ Successfully installed pip-21.2.4
 
 (venv) D:\WORK>cd newproject
 
+(venv) D:\WORK\newproject>python manage.py startapp employee  
 
 Database setup:
 
@@ -209,8 +210,13 @@ D:\WORK>venv\Scripts\activate
 
 (venv) D:\WORK\newproject>python manage.py runserver
 
+(venv) D:\WORK\newproject>python manage.py createsuperuser
 
-
+Username (leave blank to use 'nice'): dipto
+Email address: dipto@gmail.com
+Password:admin@1234
+Password (again):
+Superuser created successfully.
 
 
 
